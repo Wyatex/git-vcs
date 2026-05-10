@@ -1,0 +1,30 @@
+{
+  "name": "git-vcs-bun",
+  "version": "0.1.0",
+  "description": "可视化 Git 管理桌面工具",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "vue": "^3.5.0",
+    "vue-router": "^4.4.0",
+    "pinia": "^2.2.0",
+    "simple-git": "^3.27.0",
+    "monaco-editor": "^0.52.0",
+    "diff-match-patch": "^1.0.5",
+    "@guolao/vue-monaco-editor": "^1.4.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.0",
+    "electron": "^33.3.0",
+    "electron-builder": "^25.1.0",
+    "electron-vite": "^5.0.0",
+    "typescript": "^5.7.0",
+    "vue-tsc": "^2.2.0",
+    "@types/diff-match-patch": "^1.0.36"
+  }
+}
