@@ -1,42 +1,17 @@
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
-import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
+import { defineConfig } from 'electron-vite'
+import vue from '@vitejs/plugin-vue'
+import unocss from 'unocss/vite'
 
 export default defineConfig({
-  main: {
-    build: {
-      rollupOptions: {
-        input: {
-          index: resolve(__dirname, 'electron/main.ts')
-        }
-      }
-    },
-    plugins: [externalizeDepsPlugin()]
-  },
-  preload: {
-    build: {
-      rollupOptions: {
-        input: {
-          index: resolve(__dirname, 'electron/preload.ts')
-        }
-      }
-    },
-    plugins: [externalizeDepsPlugin()]
-  },
+  main: {},
+  preload: {},
   renderer: {
-    root: resolve(__dirname, '.'),
-    build: {
-      rollupOptions: {
-        input: {
-          index: resolve(__dirname, 'index.html')
-        }
-      }
-    },
     resolve: {
       alias: {
-        '@': resolve(__dirname, 'src')
+        '@': resolve(__dirname, 'src/renderer/src')
       }
     },
-    plugins: [vue()]
+    plugins: [vue(), unocss()]
   }
 })
