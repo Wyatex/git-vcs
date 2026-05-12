@@ -37,7 +37,7 @@ const api = {
   getConflictContent: (repoPath: string, filePath: string) => ipcRenderer.invoke('merge:get-conflict-content', repoPath, filePath),
   stageResolved: (repoPath: string, filePath: string) => ipcRenderer.invoke('merge:stage-resolved', repoPath, filePath),
   completeMerge: (repoPath: string, message: string) => ipcRenderer.invoke('merge:complete', repoPath, message),
-  abortMerge: (repoPath: string) => ipcRenderer.invoke('merge:abort', repoPath)
+  abortMerge: (repoPath: string) => ipcRenderer.invoke('merge:abort', repoPath),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
@@ -46,11 +46,13 @@ const api = {
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
-  } catch (error) {
+    contextBridge.exposeInMainWorld('electronAPI', api)
+  }
+  catch (error) {
     console.error(error)
   }
-} else {
+}
+else {
   // @ts-ignore (define in dts)
   window.electron = electronAPI
   // @ts-ignore (define in dts)

@@ -1,47 +1,24 @@
-<template>
-  <div id="app-container">
-    <AppHeader />
-    <div id="main-area">
-      <AppSidebar v-if="gitStore.isRepoLoaded" />
-      <div id="content-area">
-        <router-view />
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import AppHeader from '@/components/AppHeader.vue'
-import AppSidebar from '@/components/AppSidebar.vue'
-import { useGitStore } from '@/stores/git'
-import { useDirectoryStore } from '@/stores/directory'
+import { computed } from 'vue'
+import { darkTheme } from 'naive-ui'
+import { useThemeStore } from '@/stores/theme'
 
-const gitStore = useGitStore()
-const directoryStore = useDirectoryStore()
+const { darkMode, naiveTheme } = useThemeStore()
 
-onMounted(async () => {
-  await directoryStore.loadRecent()
-})
+const naiveDarkTheme = computed(() => (darkMode.value ? darkTheme : undefined))
 </script>
 
+<template>
+  <NConfigProvider
+    :theme="naiveDarkTheme"
+    :theme-overrides="naiveTheme"
+    class="h-full"
+  >
+    <AppProvider>
+      <router-view />
+    </AppProvider>
+  </NConfigProvider>
+</template>
+
 <style scoped>
-#app-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
-
-#main-area {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-#content-area {
-  flex: 1;
-  overflow: auto;
-  background: var(--bg-primary);
-}
 </style>
