@@ -11,6 +11,9 @@ export default defineConfig({
   main: {},
   preload: {},
   renderer: {
+    server: {
+      allowedHosts: ['.monkeycode-ai.online']
+    },
     resolve: {
       alias: {
         "@": resolve(__dirname, "src/renderer/src"),

@@ -15,3 +15,12 @@ html {
   overflow-x: hidden;
   color: rgb(var(--base-text-color));
 }
+
+body {
+  background-color: rgb(var(--layout-color));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { darkTheme } from 'naive-ui'
+import { storeToRefs } from 'pinia'
 import { useThemeStore } from '@/stores/theme'
 
-const { darkMode, naiveTheme } = useThemeStore()
+const themeStore = useThemeStore()
+const { darkMode, naiveTheme } = storeToRefs(themeStore)
 
 const naiveDarkTheme = computed(() => (darkMode.value ? darkTheme : undefined))
 </script>
