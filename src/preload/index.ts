@@ -1,3 +1,4 @@
+import process from 'node:process'
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import type { ElectronApi } from '../shared/git'
@@ -31,7 +32,7 @@ const api: ElectronApi = {
   getConflictContent: (repoPath, filePath) => ipcRenderer.invoke('getConflictContent', repoPath, filePath),
   stageResolved: (repoPath, filePath) => ipcRenderer.invoke('stageResolved', repoPath, filePath),
   completeMerge: (repoPath, message) => ipcRenderer.invoke('completeMerge', repoPath, message),
-  abortMerge: repoPath => ipcRenderer.invoke('abortMerge', repoPath)
+  abortMerge: repoPath => ipcRenderer.invoke('abortMerge', repoPath),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

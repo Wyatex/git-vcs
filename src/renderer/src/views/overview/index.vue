@@ -16,7 +16,7 @@ const quickActions = [
   { label: '打开提交工作台', route: '/commit' },
   { label: '查看历史', route: '/history' },
   { label: '管理分支', route: '/branches' },
-  { label: '处理合并', route: '/merge' }
+  { label: '处理合并', route: '/merge' },
 ]
 
 onMounted(async () => {
@@ -59,10 +59,10 @@ function formatTime(value: number): string {
                 <div class="text-sm font-semibold">
                   {{ item.name }}
                 </div>
-                <div class="mt-1 break-all text-xs text-[rgb(var(--base-text-color)/0.7)]">
+                <div class="text-xs mt-1 break-all text-[rgb(var(--base-text-color)/0.7)]">
                   {{ item.path }}
                 </div>
-                <div class="mt-2 text-xs text-[rgb(var(--base-text-color)/0.55)]">
+                <div class="text-xs mt-2 text-[rgb(var(--base-text-color)/0.55)]">
                   最近打开：{{ formatTime(item.lastOpened) }}
                 </div>
               </div>
@@ -111,7 +111,7 @@ function formatTime(value: number): string {
         </NAlert>
 
         <div>
-          <div class="mb-2 text-sm font-semibold">
+          <div class="text-sm mb-2 font-semibold">
             快速入口
           </div>
           <div class="flex flex-wrap gap-2">

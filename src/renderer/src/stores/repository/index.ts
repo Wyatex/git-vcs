@@ -59,6 +59,6 @@ export const useRepositoryStore = defineStore('repository', () => {
     loadRecentRepositories,
     openRepository,
     refreshRepository,
-    removeRecentRepository
+    removeRecentRepository,
   }
 })

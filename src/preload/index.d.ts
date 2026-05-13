@@ -1,4 +1,4 @@
-import { ElectronAPI } from '@electron-toolkit/preload'
+import type { ElectronAPI } from '@electron-toolkit/preload'
 import type { ElectronApi } from '../shared/git'
 
 declare global {

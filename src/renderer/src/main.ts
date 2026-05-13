@@ -12,8 +12,8 @@ const pinia = createPinia()
 pinia.use(
   createPersistedState({
     storage: window.localStorage,
-    key: id => `git-vcs-${id}`
-  })
+    key: id => `git-vcs-${id}`,
+  }),
 )
 
 app.use(pinia)

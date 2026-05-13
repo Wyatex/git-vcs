@@ -46,6 +46,6 @@ export function useRepositoryActions() {
   return {
     openingRepository,
     openRepository,
-    removeRecentRepository
+    removeRecentRepository,
   }
 }

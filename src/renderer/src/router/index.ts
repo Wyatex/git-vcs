@@ -10,49 +10,49 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'overview',
         name: 'overview',
-        component: () => import('@/views/overview/index.vue')
+        component: () => import('@/views/overview/index.vue'),
       },
       {
         path: 'commit',
         name: 'commit',
-        component: () => import('@/views/commit/index.vue')
+        component: () => import('@/views/commit/index.vue'),
       },
       {
         path: 'branches',
         name: 'branches',
-        component: () => import('@/views/branches/index.vue')
+        component: () => import('@/views/branches/index.vue'),
       },
       {
         path: 'tags',
         name: 'tags',
-        component: () => import('@/views/tags/index.vue')
+        component: () => import('@/views/tags/index.vue'),
       },
       {
         path: 'stash',
         name: 'stash',
-        component: () => import('@/views/stash/index.vue')
+        component: () => import('@/views/stash/index.vue'),
       },
       {
         path: 'history',
         name: 'history',
-        component: () => import('@/views/history/index.vue')
+        component: () => import('@/views/history/index.vue'),
       },
       {
         path: 'merge',
         name: 'merge',
-        component: () => import('@/views/merge/index.vue')
-      }
-    ]
+        component: () => import('@/views/merge/index.vue'),
+      },
+    ],
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/overview'
-  }
+    redirect: '/overview',
+  },
 ]
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
+  routes,
 })
 
 export default router

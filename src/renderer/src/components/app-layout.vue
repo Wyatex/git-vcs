@@ -3,9 +3,11 @@ import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useRepositoryActions } from '@/composables/use-repository-actions'
 import { useRepositoryStore } from '@/stores/repository'
+import { useThemeStore } from '@/stores/theme'
 
 const route = useRoute()
 const router = useRouter()
+const themeStore = useThemeStore()
 const repositoryStore = useRepositoryStore()
 const { openingRepository, openRepository } = useRepositoryActions()
 
@@ -21,7 +23,7 @@ const navItems = [
 
 const activeKey = computed(() => route.path)
 const summary = computed(() => repositoryStore.summary)
-const repoName = computed(() => summary.value?.repoName ?? '未打开仓库')
+const repoPath = computed(() => summary.value?.repoPath ?? '未打开仓库')
 
 onMounted(async () => {
   await repositoryStore.initialize()
@@ -41,7 +43,7 @@ function handleMenuSelect(key: string): void {
             Git VCS Desktop Tool
           </div>
           <div class="text-sm mt-1 flex flex-wrap items-center gap-2 text-[rgb(var(--base-text-color)/0.7)]">
-            <span>{{ repoName }}</span>
+            <span>{{ repoPath }}</span>
             <NTag v-if="summary?.currentBranch" size="small" type="primary" round>
               {{ summary.currentBranch }}
             </NTag>
@@ -51,6 +53,19 @@ function handleMenuSelect(key: string): void {
           </div>
         </div>
         <div class="flex items-center gap-2">
+          <!-- 主题切换 -->
+          <NButton
+            circle
+            quaternary
+            aria-label="切换主题"
+            @click="themeStore.toggleThemeScheme()"
+          >
+            <template #icon>
+              <div v-if="themeStore.themeScheme === 'dark'" class="i-carbon-moon text-xl" />
+              <div v-else-if="themeStore.themeScheme === 'auto'" class="i-carbon-laptop text-xl" />
+              <div v-else class="i-carbon-sun text-xl" />
+            </template>
+          </NButton>
           <NButton secondary :loading="repositoryStore.loading" @click="repositoryStore.refreshRepository()">
             刷新
           </NButton>
@@ -70,7 +85,7 @@ function handleMenuSelect(key: string): void {
         <router-view />
       </main>
 
-      <aside class="hidden w-80 bg-layout p-4 shadow-sider xl:block">
+      <aside class="hidden w-80 bg-layout p-4 pt-0 shadow-sider xl:block">
         <NCard title="仓库摘要" :bordered="false" size="small">
           <NEmpty v-if="!summary" description="打开仓库后显示摘要" />
           <div v-else class="text-sm flex flex-col gap-3">

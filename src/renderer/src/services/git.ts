@@ -1,4 +1,4 @@
-import type { RepositorySummary, RecentRepository } from '@/types/git'
+import type { RecentRepository, RepositorySummary } from '@/types/git'
 
 export const gitService = {
   selectDirectory() {
@@ -18,5 +18,5 @@ export const gitService = {
   },
   getRepositorySummary(repoPath: string): Promise<RepositorySummary> {
     return window.api.getRepositorySummary(repoPath)
-  }
+  },
 }

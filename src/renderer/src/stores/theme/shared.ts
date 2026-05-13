@@ -1,21 +1,21 @@
+import { defu } from 'defu'
 import {
   addColorAlpha,
   getColorPalette,
   getPaletteColorByNumber,
   getRgb,
-} from "@/utils/color";
+} from '@/utils/color'
 import { toggleHtmlClass } from '@/utils/common'
 import { themeSettings } from '@/theme/settings'
 import { themeVars } from '@/theme/vars'
-import type { GlobalThemeOverrides } from "naive-ui";
-import { defu } from "defu";
+import type { GlobalThemeOverrides } from 'naive-ui'
 
-type NaiveColorScene = "" | "Suppl" | "Hover" | "Pressed" | "Active";
-type NaiveColorKey = `${App.Theme.ThemeColorKey}Color${NaiveColorScene}`;
-type NaiveThemeColor = Partial<Record<NaiveColorKey, string>>;
+type NaiveColorScene = '' | 'Suppl' | 'Hover' | 'Pressed' | 'Active'
+type NaiveColorKey = `${App.Theme.ThemeColorKey}Color${NaiveColorScene}`
+type NaiveThemeColor = Partial<Record<NaiveColorKey, string>>
 interface NaiveColorAction {
-  scene: NaiveColorScene;
-  handler: (color: string) => string;
+  scene: NaiveColorScene
+  handler: (color: string) => string
 }
 
 /**
@@ -180,7 +180,6 @@ export function toggleAuxiliaryColorModes(grayscaleMode = false, colorWeakness =
     .filter(Boolean)
     .join(' ')
 }
-
 
 /**
  * Get naive theme

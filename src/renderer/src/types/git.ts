@@ -8,7 +8,7 @@ import type {
   RecentRepository,
   RepositoryStatus,
   RepositorySummary,
-  TagSummary
+  TagSummary,
 } from '../../../shared/git'
 
 export type {
@@ -21,7 +21,7 @@ export type {
   RecentRepository,
   RepositoryStatus,
   RepositorySummary,
-  TagSummary
+  TagSummary,
 }
 
 export interface StashEntry {

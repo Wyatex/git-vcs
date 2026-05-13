@@ -15,7 +15,9 @@ const summary = computed(() => repositoryStore.summary)
           <NListItem v-for="file in summary.stagedFiles" :key="file">
             {{ file }}
           </NListItem>
-          <NListItem v-if="summary.stagedFiles.length === 0">暂无已暂存文件</NListItem>
+          <NListItem v-if="summary.stagedFiles.length === 0">
+            暂无已暂存文件
+          </NListItem>
         </NList>
       </NCard>
       <NCard embedded title="未暂存文件" size="small">
@@ -23,7 +25,9 @@ const summary = computed(() => repositoryStore.summary)
           <NListItem v-for="file in [...summary.unstagedFiles, ...summary.untrackedFiles]" :key="file">
             {{ file }}
           </NListItem>
-          <NListItem v-if="summary.unstagedFiles.length + summary.untrackedFiles.length === 0">工作区干净</NListItem>
+          <NListItem v-if="summary.unstagedFiles.length + summary.untrackedFiles.length === 0">
+            工作区干净
+          </NListItem>
         </NList>
       </NCard>
     </div>

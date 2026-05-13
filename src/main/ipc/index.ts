@@ -1,7 +1,9 @@
 import { promises as fs } from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
-import { ipcMain, dialog } from 'electron'
-import simpleGit, { type SimpleGit } from 'simple-git'
+import { dialog, ipcMain } from 'electron'
+import simpleGit from 'simple-git'
+import type { SimpleGit } from 'simple-git'
 import type {
   BranchSummary,
   CommitDetail,
@@ -14,13 +16,16 @@ import type {
   RecentRepository,
   RepositoryStatus,
   RepositorySummary,
-  TagSummary
+  TagSummary,
 } from '../../shared/git'
 
 const RECENT_REPOS_FILE = 'recent-repositories.json'
 
+console.log(path.join(os.homedir(), '.wyatex', 'git-vcs'));
+
+
 function getAppDataDir(): string {
-  return path.join(process.cwd(), '.monkeycode')
+  return path.join(os.homedir(), '.wyatex', 'git-vcs')
 }
 
 function getRecentReposFilePath(): string {
@@ -65,7 +70,7 @@ async function getRepositoryStatus(repoPath: string): Promise<RepositoryStatus> 
   const git = createGit(repoPath)
   const [status, stashRaw] = await Promise.all([
     git.status(),
-    git.raw(['stash', 'list'])
+    git.raw(['stash', 'list']),
   ])
 
   const stagedFiles = status.files
@@ -96,7 +101,7 @@ async function getRepositoryStatus(repoPath: string): Promise<RepositoryStatus> 
     conflicts: status.conflicted,
     stagedFiles,
     unstagedFiles,
-    untrackedFiles
+    untrackedFiles,
   }
 }
 
@@ -119,14 +124,14 @@ async function getRepositorySummary(repoPath: string): Promise<RepositorySummary
       stagedFiles: [],
       unstagedFiles: [],
       untrackedFiles: [],
-      remotes: []
+      remotes: [],
     }
   }
 
   const git = createGit(repoPath)
   const [status, remotes] = await Promise.all([
     getRepositoryStatus(repoPath),
-    git.getRemotes(true)
+    git.getRemotes(true),
   ])
 
   return {
@@ -144,12 +149,12 @@ async function getRepositorySummary(repoPath: string): Promise<RepositorySummary
       staged: status.stagedFiles.length,
       unstaged: status.unstagedFiles.length,
       untracked: status.untrackedFiles.length,
-      conflicted: status.conflicts.length
+      conflicted: status.conflicts.length,
     },
     stagedFiles: status.stagedFiles,
     unstagedFiles: status.unstagedFiles,
     untrackedFiles: status.untrackedFiles,
-    remotes: remotes.map(remote => remote.name)
+    remotes: remotes.map(remote => remote.name),
   }
 }
 
@@ -170,7 +175,7 @@ export function registerIpcHandlers(): void {
   const handlers: Record<keyof ElectronApi, (...args: any[]) => Promise<any>> = {
     async selectDirectory() {
       const result = await dialog.showOpenDialog({
-        properties: ['openDirectory']
+        properties: ['openDirectory'],
       })
 
       if (result.canceled || result.filePaths.length === 0)
@@ -210,7 +215,7 @@ export function registerIpcHandlers(): void {
           current: cleanName === branches.current,
           remote: name.startsWith('remotes/'),
           commit: '',
-          label: cleanName
+          label: cleanName,
         }
       })
     },
@@ -226,7 +231,7 @@ export function registerIpcHandlers(): void {
         authorName: item.author_name,
         authorEmail: item.author_email,
         date: item.date,
-        message: item.message
+        message: item.message,
       }))
     },
     async getCommitDetail(repoPath: string, hash: string) {
@@ -235,7 +240,7 @@ export function registerIpcHandlers(): void {
         git.show([`${hash}`, '--format=%B', '--no-patch']),
         git.raw(['show', '-s', '--format=%P', hash]),
         git.raw(['show', '--name-only', '--format=', hash]),
-        git.log({ from: `${hash}^`, to: hash, maxCount: 1 })
+        git.log({ from: `${hash}^`, to: hash, maxCount: 1 }),
       ])
       const entry = log.all[0]
       const body = rawBody.trim()
@@ -248,7 +253,7 @@ export function registerIpcHandlers(): void {
         message: entry?.message ?? body.split('\n')[0] ?? '',
         body,
         parents: rawParents.trim().split(' ').filter(Boolean),
-        files: rawFiles.split('\n').map(item => item.trim()).filter(Boolean)
+        files: rawFiles.split('\n').map(item => item.trim()).filter(Boolean),
       } satisfies CommitDetail
     },
     async getFileDiff(repoPath: string, hash: string, filePath: string) {
@@ -286,7 +291,7 @@ export function registerIpcHandlers(): void {
       const result = await createGit(repoPath).commit(message)
       return {
         success: true,
-        hash: result.commit || ''
+        hash: result.commit || '',
       } satisfies CommitResult
     },
     async add(repoPath: string, files: string[]) {
@@ -319,7 +324,7 @@ export function registerIpcHandlers(): void {
           success: true,
           status: result.conflicts.length > 0 ? 'conflicted' : 'success',
           conflicts: (result.conflicts ?? []).map(item => item.file).filter((item): item is string => Boolean(item)),
-          message: result.summary.changes ? 'Merge completed' : 'Already up to date'
+          message: result.summary.changes ? 'Merge completed' : 'Already up to date',
         } satisfies MergeResult
       }
       catch {
@@ -328,13 +333,13 @@ export function registerIpcHandlers(): void {
           success: true,
           status: 'conflicted',
           conflicts: status.conflicted,
-          message: 'Merge has conflicts'
+          message: 'Merge has conflicts',
         } satisfies MergeResult
       }
     },
     async getConflictContent(repoPath: string, filePath: string) {
       return {
-        content: await readFileSafe(path.join(repoPath, filePath))
+        content: await readFileSafe(path.join(repoPath, filePath)),
       } satisfies ConflictContent
     },
     async stageResolved(repoPath: string, filePath: string) {
@@ -348,7 +353,7 @@ export function registerIpcHandlers(): void {
     async abortMerge(repoPath: string) {
       await createGit(repoPath).merge(['--abort'])
       return toSuccess()
-    }
+    },
   }
 
   for (const [channel, handler] of Object.entries(handlers)) {
