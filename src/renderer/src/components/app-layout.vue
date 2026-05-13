@@ -16,7 +16,7 @@ const navItems = [
   { label: '标签', key: '/tags' },
   { label: 'Stash', key: '/stash' },
   { label: '历史', key: '/history' },
-  { label: 'Merge', key: '/merge' }
+  { label: 'Merge', key: '/merge' },
 ]
 
 const activeKey = computed(() => route.path)
@@ -33,14 +33,14 @@ function handleMenuSelect(key: string): void {
 </script>
 
 <template>
-  <div class="h-full flex flex-col bg-[rgb(var(--layout-color,255 255 255))]">
-    <header class="border-b border-[rgb(var(--base-text-color)/0.08)] bg-[rgb(var(--container-color,255_255_255))] px-5 py-3">
+  <div class="h-full flex flex-col bg-container">
+    <header class="bg-layout px-5 py-3 shadow-header">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div class="min-w-0">
           <div class="text-lg font-semibold">
             Git VCS Desktop Tool
           </div>
-          <div class="mt-1 flex flex-wrap items-center gap-2 text-sm text-[rgb(var(--base-text-color)/0.7)]">
+          <div class="text-sm mt-1 flex flex-wrap items-center gap-2 text-[rgb(var(--base-text-color)/0.7)]">
             <span>{{ repoName }}</span>
             <NTag v-if="summary?.currentBranch" size="small" type="primary" round>
               {{ summary.currentBranch }}
@@ -62,7 +62,7 @@ function handleMenuSelect(key: string): void {
     </header>
 
     <div class="min-h-0 flex flex-1 overflow-hidden">
-      <aside class="w-66 border-r border-[rgb(var(--base-text-color)/0.08)] bg-[rgb(var(--container-color,255 255 255))] p-3">
+      <aside class="w-66 bg-layout p-3 shadow-sider">
         <NMenu :value="activeKey" :options="navItems" @update:value="handleMenuSelect" />
       </aside>
 
@@ -70,10 +70,10 @@ function handleMenuSelect(key: string): void {
         <router-view />
       </main>
 
-      <aside class="hidden w-80 border-l border-[rgb(var(--base-text-color)/0.08)] bg-[rgb(var(--container-color,255 255 255))] p-4 xl:block">
+      <aside class="hidden w-80 bg-layout p-4 shadow-sider xl:block">
         <NCard title="仓库摘要" :bordered="false" size="small">
           <NEmpty v-if="!summary" description="打开仓库后显示摘要" />
-          <div v-else class="flex flex-col gap-3 text-sm">
+          <div v-else class="text-sm flex flex-col gap-3">
             <div class="flex items-center justify-between">
               <span>远程</span>
               <strong>{{ summary.remotes.length }}</strong>
