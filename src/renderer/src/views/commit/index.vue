@@ -39,8 +39,11 @@ const activeFile = ref<FileState | null>(null)
 
 // 监听仓库状态更新，同步文件列表
 watch(summary, (newSummary) => {
-  if (!newSummary)
+  if (!newSummary) {
+    files.value = []
+    activeFile.value = null
     return
+  }
 
   const currentFilesMap = new Map(files.value.map(f => [f.path, f]))
   const nextFiles: FileState[] = []
@@ -68,6 +71,17 @@ watch(summary, (newSummary) => {
   newSummary.untrackedFiles.forEach(f => addFile(f, 'untracked'))
 
   files.value = nextFiles
+
+  // 检查当前正在比对的文件是否还在更改列表中，如果不在则清空右侧显示
+  if (activeFile.value) {
+    const exists = nextFiles.find(f => f.path === activeFile.value!.path)
+    if (exists) {
+      activeFile.value = exists
+    }
+    else {
+      activeFile.value = null
+    }
+  }
 }, { immediate: true })
 
 const allFilesChecked = computed(() => files.value.length > 0 && files.value.every(f => f.checked))
@@ -113,7 +127,9 @@ function toggleAllFiles(checked: boolean) {
 // 选中某个文件查看 Diff
 async function selectFile(file: FileState) {
   activeFile.value = file
-  if (file.changes || file.loading)
+
+  // 保证每次点击文件都能重新拉取并计算最新 Diff
+  if (file.loading)
     return
 
   file.loading = true
@@ -258,7 +274,7 @@ async function handleCommit() {
 
 <template>
   <NCard title="提交工作台" :bordered="false" class="h-full">
-    <NEmpty v-if="!summary" description="先打开仓库，再进入提交工作台" />
+    <NEmpty v-if="!summary" description="请先打开一个 Git 仓库" />
     <div v-else class="grid items-start gap-4 lg:grid-cols-[360px_1fr]">
       <!-- 左侧区域：信息填写与文件树 -->
       <div class="h-full flex flex-col gap-4">

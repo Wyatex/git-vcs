@@ -261,12 +261,23 @@ export function registerIpcHandlers(): void {
       await createGit(repoPath).checkout(ref)
       return toSuccess()
     },
-    async createBranch(repoPath: string, name: string, startPoint?: string) {
+    async createBranch(repoPath: string, name: string, startPoint?: string, checkout = true) {
       const git = createGit(repoPath)
-      if (startPoint)
-        await git.checkoutBranch(name, startPoint)
-      else
-        await git.checkoutLocalBranch(name)
+
+      if (checkout) {
+        // 创建并立即签出
+        if (startPoint)
+          await git.checkoutBranch(name, startPoint)
+        else
+          await git.checkoutLocalBranch(name)
+      }
+      else {
+        // 仅创建分支，不签出
+        if (startPoint)
+          await git.branch([name, startPoint])
+        else
+          await git.branch([name])
+      }
       return toSuccess()
     },
     async deleteBranch(repoPath: string, name: string, force = false) {

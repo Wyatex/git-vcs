@@ -102,7 +102,7 @@ export interface ElectronApi {
   getCommitDetail: (repoPath: string, hash: string) => Promise<CommitDetail>
   getFileDiff: (repoPath: string, hash: string, filePath: string) => Promise<string>
   checkout: (repoPath: string, ref: string) => Promise<GitOperationResult>
-  createBranch: (repoPath: string, name: string, startPoint?: string) => Promise<GitOperationResult>
+  createBranch: (repoPath: string, name: string, startPoint: string | undefined, checkout: boolean) => Promise<GitOperationResult>
   deleteBranch: (repoPath: string, name: string, force?: boolean) => Promise<GitOperationResult>
   createTag: (repoPath: string, name: string, message?: string) => Promise<GitOperationResult>
   deleteTag: (repoPath: string, name: string) => Promise<GitOperationResult>
