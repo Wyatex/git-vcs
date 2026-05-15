@@ -21,9 +21,6 @@ import type {
 
 const RECENT_REPOS_FILE = 'recent-repositories.json'
 
-console.log(path.join(os.homedir(), '.wyatex', 'git-vcs'));
-
-
 function getAppDataDir(): string {
   return path.join(os.homedir(), '.wyatex', 'git-vcs')
 }
