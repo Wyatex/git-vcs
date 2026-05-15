@@ -33,6 +33,8 @@ const api: ElectronApi = {
   stageResolved: (repoPath, filePath) => ipcRenderer.invoke('stageResolved', repoPath, filePath),
   completeMerge: (repoPath, message) => ipcRenderer.invoke('completeMerge', repoPath, message),
   abortMerge: repoPath => ipcRenderer.invoke('abortMerge', repoPath),
+  unstage: (repoPath, files) => ipcRenderer.invoke('unstage', repoPath, files),
+  stagePartialContent: (repoPath, filePath, content) => ipcRenderer.invoke('stagePartialContent', repoPath, filePath, content),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

@@ -117,4 +117,6 @@ export interface ElectronApi {
   stageResolved: (repoPath: string, filePath: string) => Promise<GitOperationResult>
   completeMerge: (repoPath: string, message: string) => Promise<GitOperationResult>
   abortMerge: (repoPath: string) => Promise<GitOperationResult>
+  unstage: (repoPath: string, files: string[]) => Promise<GitOperationResult>
+  stagePartialContent: (repoPath: string, filePath: string, content: string) => Promise<GitOperationResult>
 }

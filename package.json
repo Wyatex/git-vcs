@@ -28,6 +28,7 @@
     "@vueuse/core": "^14.3.0",
     "colord": "^2.9.3",
     "defu": "^6.1.7",
+    "diff": "^9.0.0",
     "diff-match-patch": "^1.0.5",
     "monaco-editor": "^0.55.1",
     "naive-ui": "^2.44.1",

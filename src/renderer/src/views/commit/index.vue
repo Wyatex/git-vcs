@@ -214,39 +214,36 @@ async function handleCommit() {
   try {
     const repoPath = repositoryStore.repoPath!
 
-    // 0. 提示当前 API 环境下的潜在操作
-    if (uncheckedStaged.length > 0 || partiallyCheckedFiles.length > 0) {
-      window.$message?.warning('部分行暂存及取消暂存功能需要在后端增加对应的 IPC (如 unstage 和 patch 文件)。目前部分选中仅打印日志验证逻辑！')
-    }
-
-    // [TODO]: 若后端增加 unstage 支持，可执行类似: await window.api.unstage(repoPath, uncheckedStaged)
+    // 1. 对于之前已被暂存，但在 UI 中取消勾选的文件，执行取消暂存 (Unstage)
     if (uncheckedStaged.length > 0) {
-      console.log('[需要 unstage（取消暂存）的文件]:', uncheckedStaged)
+      await window.api.unstage(repoPath, uncheckedStaged)
     }
 
-    // 1. 对于完全选中的文件，执行全量 add
+    // 2. 对于完全选中的文件，执行全量 Add (包含修改和新增)
     if (fullyCheckedFiles.length > 0) {
       await window.api.add(repoPath, fullyCheckedFiles)
     }
 
-    // 2. 对于部分选中的文件计算最新暂存内容
-    // [TODO]: 若后端支持 partial stage，可执行类似: await window.api.stagePartialContent(repoPath, file.path, partialContent)
+    // 3. 对于部分选中的文件，执行部分暂存 (将内存中组装好的代码片段直接覆盖进暂存区)
     if (partiallyCheckedFiles.length > 0) {
       for (const file of partiallyCheckedFiles) {
         const partialContent = getStagedContent(file)
-        console.log(`[部分暂存模拟 - 需要将以下内容覆盖进暂存区]: ${file.path}\n${partialContent}`)
+        await window.api.stagePartialContent(repoPath, file.path, partialContent)
       }
     }
 
-    // 3. 执行最终的 Commit
+    // 4. 暂存区已准备就绪，执行最终的 Commit
     const result = await window.api.commit(repoPath, commitMessage.value)
     if (result.success) {
       window.$message?.success('提交成功')
       commitMessage.value = ''
+      // 清空激活的文件和列表缓存，防止展示旧数据
+      activeFile.value = null
+      files.value = []
       await repositoryStore.refreshRepository()
     }
     else {
-      window.$message?.error(`提交失败: ${result.error || '未知错误'}`)
+      window.$message?.error(`提交失败: 未知错误`)
     }
   }
   catch (error) {

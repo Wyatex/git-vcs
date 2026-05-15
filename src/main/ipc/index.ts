@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
+import { randomUUID } from 'node:crypto'
 import { dialog, ipcMain } from 'electron'
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
@@ -350,6 +351,53 @@ export function registerIpcHandlers(): void {
     async abortMerge(repoPath: string) {
       await createGit(repoPath).merge(['--abort'])
       return toSuccess()
+    },
+
+    // 取消暂存功能
+    async unstage(repoPath: string, files: string[]) {
+      if (!files || files.length === 0)
+        return toSuccess()
+      const git = createGit(repoPath)
+      try {
+        // 大多数情况使用 reset HEAD
+        await git.reset(['HEAD', '--', ...files])
+      }
+      catch {
+        // 针对没有 HEAD 的初始提交情况，退回到 rm --cached
+        await git.rm(['--cached', '--', ...files])
+      }
+      return toSuccess()
+    },
+
+    // 部分暂存功能（采用安全的 Git 底层命令，绝对不破坏本地工作区）
+    async stagePartialContent(repoPath: string, filePath: string, content: string) {
+      const git = createGit(repoPath)
+      // 将想要暂存的内容写入系统临时目录
+      const tempPath = path.join(os.tmpdir(), `git-partial-${randomUUID()}`)
+      await fs.writeFile(tempPath, content, 'utf8')
+
+      try {
+        // 1. 将临时文件转化为 git blob 对象，获取对象 Hash
+        const blobHash = (await git.raw(['hash-object', '-w', tempPath])).trim()
+
+        // 2. 获取该文件原本的 mode (权限)，如果是新文件默认给 100644
+        let mode = '100644'
+        const lsFiles = await git.raw(['ls-files', '-s', filePath])
+        if (lsFiles) {
+          const match = lsFiles.match(/^(\d+)/)
+          if (match)
+            mode = match[1]
+        }
+
+        // 3. 将新组装好的 blob 对象直接写入 Git Index (暂存区)
+        await git.raw(['update-index', '--cacheinfo', `${mode},${blobHash},${filePath}`])
+
+        return toSuccess()
+      }
+      finally {
+        // 无论成功失败，清理掉临时文件
+        await fs.unlink(tempPath).catch(() => {})
+      }
     },
   }
 
